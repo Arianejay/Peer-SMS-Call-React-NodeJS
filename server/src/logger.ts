@@ -1,7 +1,10 @@
 const pino = require('pino')
 const logger = pino({
   transport: {
-    target: 'pino-pretty'
+    target: 'pino-pretty',
+    options: {
+      colorize: true
+    }
   },
 })
 
