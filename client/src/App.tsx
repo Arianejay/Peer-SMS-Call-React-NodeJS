@@ -1,10 +1,17 @@
-import React from 'react'
-import './App.css'
+import React from "react";
+import "./stylesheets/main.module.scss";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App"></div>
-  )
-}
+import Home from "./pages/Home";
 
-export default App
+const App: React.FC = () => {
+    return (
+        <BrowserRouter>
+            <Routes>
+                <Route path="/" element={<Home />} />
+            </Routes>
+        </BrowserRouter>
+    );
+};
+
+export default App;
