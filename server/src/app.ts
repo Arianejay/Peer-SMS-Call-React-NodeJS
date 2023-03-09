@@ -1,33 +1,46 @@
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import http from "http";
+
+import notFound from "./middlewares/notFound";
+import exception from "./middlewares/exception";
 
 import SMSRoutes from "./routes/sms.route";
 import CallRoutes from "./routes/call.route";
+import logger from "./logger";
 
-class App {
-    public express: express.Application;
+const PORT = process.env.PORT || 3001;
+
+class App extends http.Server {
+    public app: express.Application;
 
     constructor() {
-        this.express = express();
-        this.middleware();
-        this.routes();
+        const app: express.Application = express();
+        super(app);
+        this.app = app;
     }
 
-    private middleware() {
-        this.express.use(cors());
-        this.express.use(bodyParser.json());
-        this.express.use(bodyParser.urlencoded({ extended: false }));
+    private setRouter() {
+        this.app.use("/sms", SMSRoutes);
+        this.app.use("/call", CallRoutes);
+        this.app.use(notFound);
+        this.app.use(exception);
     }
 
-    private routes() {
-        this.express.use("/sms", SMSRoutes);
-        this.express.use("/call", CallRoutes);
+    private setMiddleware() {
+        this.app.use(cors());
+        this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: false }));
+        this.setRouter();
     }
 
-    // async start() {
-    //     this.express.use.middleware();
-    // }
+    async start() {
+        this.setMiddleware();
+        return this.app.listen(PORT, () => {
+            logger.info(`Server is running on: http://localhost:${PORT}`);
+        });
+    }
 }
 
-export default new App().express;
+export default App;
