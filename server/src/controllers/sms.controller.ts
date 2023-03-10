@@ -32,7 +32,7 @@ export const SendMessage = (
                 logger.error(err);
             });
 
-        return res.status(200).json({ message: "MESSAGE SENT SUCCESSFULLY!" });
+        return res.status(200).json({ message: "Message sent successfully!" });
     } catch (error) {
         logger.error(error);
         next(error);

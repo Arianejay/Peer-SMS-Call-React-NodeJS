@@ -16,7 +16,7 @@ const Home: React.FC = () => {
                     them with a free phone call.
                 </p>
             </div>
-            <Form />
+            <Form limit={20} />
             <Log />
         </div>
     );

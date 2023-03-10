@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styles from "../stylesheets/main.module.scss";
 
 const Header: React.FC = () => {
-    const [currentTime, setCurrentTime] = useState<String | Date>(new Date());
+    const [currentTime, setCurrentTime] = useState<string | Date>(new Date());
     const options = {
         month: "short",
         day: "numeric",
