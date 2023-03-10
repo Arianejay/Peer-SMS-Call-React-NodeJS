@@ -24,8 +24,8 @@ class App extends http.Server {
     private setRouter() {
         this.app.use("/sms", SMSRoutes);
         this.app.use("/call", CallRoutes);
-        this.app.use(notFound);
-        this.app.use(exception);
+        // this.app.use(notFound);
+        // this.app.use(exception);
     }
 
     private setMiddleware() {

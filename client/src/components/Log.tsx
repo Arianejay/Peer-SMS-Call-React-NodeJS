@@ -1,7 +1,12 @@
 import React from "react";
 import styles from "../stylesheets/main.module.scss";
 
+import { useStateContext } from "../context/Context";
+
 const Log: React.FC = () => {
+    const { logs } = useStateContext();
+    console.log(logs);
+
     return (
         <div className={styles.log__container}>
             <div className={styles.log__box}>

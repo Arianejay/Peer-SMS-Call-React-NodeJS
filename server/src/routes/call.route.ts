@@ -4,6 +4,6 @@ import { CallbackCall, GetToken } from "../controllers/call.controller";
 const router = express.Router();
 
 router.post("/callback", CallbackCall);
-router.get("/", GetToken);
+router.get("/token", GetToken);
 
 export default router;

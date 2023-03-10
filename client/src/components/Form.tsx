@@ -2,38 +2,82 @@ import React, { useState, MouseEvent, useRef } from "react";
 import styles from "../stylesheets/main.module.scss";
 import { toast } from "react-toastify";
 import { parsePhoneNumber } from "awesome-phonenumber";
+import moment from "moment";
 
 import { IForm } from "../types/IForm";
+import { validate } from "../validations/validate";
+import { useStateContext } from "../context/Context";
 
-import Axios from "../axios/axios";
+import PeerSMS from "../services/PeerSMSService";
+import PeerCall from "../services/PeerCallService";
 
 const Form: React.FC<IForm> = ({ limit }) => {
+    // states
     const [receiverNumber, setReceiverNumber] = useState<string>("");
     const [message, setMessage] = useState<string>("");
+
     const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const { logs, setLogs } = useStateContext();
+
+    // character count
     const maxCharacterCount = 100 as number;
     const remainingCharacter = maxCharacterCount - message.length;
     const options = { color: limit >= remainingCharacter ? "red" : "" };
 
+    // parsing phone number
+    const pn = parsePhoneNumber(receiverNumber, { regionCode: "PH" });
+    const parsedNumber = (pn.number && pn.number.e164) as string;
+    const typeIsMobile = (pn.number && pn.typeIsMobile) as boolean;
+    const phonePossibility = (pn.number && pn.possibility) as string;
+
+    const logger = (message: string) => {
+        try {
+            const messageObj = {
+                message: message,
+                date: moment().format("LLLL"),
+            };
+            setLogs((prevState: Array<object>) => [...prevState, messageObj]);
+        } catch (error) {
+            console.log(error);
+        }
+        return Promise.resolve();
+    };
+
     const handleSendMessage = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        const pn = parsePhoneNumber(receiverNumber, { regionCode: "PH" });
 
-        // validations
-        if (!pn || !message)
-            return toast.error(
-                "Incomplete input, please enter phone number and message."
-            );
+        validate(parsedNumber, message, phonePossibility, typeIsMobile, false)
+            ?.then(() => {
+                PeerSMS.sendMessage(message, pn.number?.e164 as string)
+                    .then((res) => {
+                        logger(`Sent message to ${parsedNumber}`).then(() => {
+                            console.log(res);
+                            // toast.success(res.data.message);
+                            setReceiverNumber("");
+                            setMessage("");
+                        });
+                    })
+                    .catch((err) => {
+                        toast.error(err);
+                    });
+            })
+            .catch((err) => {
+                toast.error(err);
+            });
+    };
 
-        if (pn && (pn.typeIsMobile as boolean) === false) {
-            return toast.error("Invalid phone number.");
-        }
+    const handleCall = (e: MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
 
-        Axios.sendMessage(message, pn.number?.e164 as string)
-            .then((res) => {
-                toast.success(res.data.message);
-                setReceiverNumber("");
-                setMessage("");
+        validate(parsedNumber, message, phonePossibility, typeIsMobile, true)
+            ?.then(() => {
+                PeerCall.getToken(pn.number?.e164 as string)
+                    .then((res) => {
+                        toast.success(res);
+                    })
+                    .catch((err) => {
+                        toast.error(err);
+                    });
             })
             .catch((err) => {
                 toast.error(err);
@@ -90,7 +134,7 @@ const Form: React.FC<IForm> = ({ limit }) => {
                 </p>
                 <div className={styles.button__container}>
                     <button onClick={handleSendMessage}>Send</button>
-                    <button>Call</button>
+                    <button onClick={handleCall}>Call</button>
                 </div>
             </form>
         </div>

@@ -46,7 +46,7 @@ export const CallbackCall = (
 
         dial.number(to);
 
-        logger.info(`Calling ${to}...`);
+        logger.info(`Dialing ${to}...`);
         res.status(200).json(twiml.toString());
     } catch (error) {
         logger.error(error);
