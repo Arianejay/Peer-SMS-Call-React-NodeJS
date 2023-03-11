@@ -15,18 +15,37 @@ button {
     width: 4rem;
     height: 2rem;
     background: $green;
-    color: $lightGreen;
+    color: $white;
     outline: none;
     border: none;
     border-radius: $borderRadius1;
     cursor: pointer;
 }
 
+.disconnect__button {
+    padding: 0 0.5rem;
+    background: $red;
+    display: flex;
+    align-items: center;
+    justify-content: center ;
+}
+
 // HEADER
 .header__container {
     width: 100%;
-    text-align: right;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 1rem;
+
+    .onCall {
+        background: $green;
+        border: 1.5px solid $green;
+        border-radius: $borderRadius1;
+        padding: 0.3rem;
+        font-size: 0.9rem;
+        color: $white;
+    }
 }
 
 // HOME
@@ -130,4 +149,26 @@ button {
         height: inherit;
         overflow-y: scroll;
     }
+
+    .log__div {
+        width: 100%;
+    }
+
+    .log__map {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    .nologs {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: -1.5rem;
+    }
+
 }

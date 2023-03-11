@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import styles from "../stylesheets/main.module.scss";
+
+import { socket } from "../socket.io/socket.io";
 
 import Header from "../components/Header";
 import Form from "../components/Form";
 import Log from "../components/Log";
 
 const Home: React.FC = () => {
+    const [clientId, setClientId] = useState<string>("");
+
+    useEffect(() => {
+        socket.on("socketId", (socketId) => {
+            setClientId(socketId);
+        });
+    }, []);
+
     return (
         <div className={styles.home__container}>
             <Header />
@@ -16,7 +26,7 @@ const Home: React.FC = () => {
                     them with a free phone call.
                 </p>
             </div>
-            <Form limit={20} />
+            <Form limit={20} clientId={clientId} />
             <Log />
         </div>
     );

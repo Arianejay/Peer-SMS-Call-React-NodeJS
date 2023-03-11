@@ -1,23 +1,22 @@
-import React, { useState, MouseEvent, useRef } from "react";
+import React, { useState, MouseEvent, KeyboardEvent, useRef } from "react";
 import styles from "../stylesheets/main.module.scss";
 import { toast } from "react-toastify";
 import { parsePhoneNumber } from "awesome-phonenumber";
-import moment from "moment";
+import { FiPhoneOff } from "react-icons/fi";
 
 import { IForm } from "../types/IForm";
 import { validate } from "../validations/validate";
-import { useStateContext } from "../context/Context";
 
 import PeerSMS from "../services/PeerSMSService";
 import PeerCall from "../services/PeerCallService";
+import Log from "../services/LogService";
 
-const Form: React.FC<IForm> = ({ limit }) => {
+const Form: React.FC<IForm> = ({ limit, clientId }) => {
     // states
     const [receiverNumber, setReceiverNumber] = useState<string>("");
     const [message, setMessage] = useState<string>("");
 
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const { logs, setLogs } = useStateContext();
 
     // character count
     const maxCharacterCount = 100 as number;
@@ -30,19 +29,6 @@ const Form: React.FC<IForm> = ({ limit }) => {
     const typeIsMobile = (pn.number && pn.typeIsMobile) as boolean;
     const phonePossibility = (pn.number && pn.possibility) as string;
 
-    const logger = (message: string) => {
-        try {
-            const messageObj = {
-                message: message,
-                date: moment().format("LLLL"),
-            };
-            setLogs((prevState: Array<object>) => [...prevState, messageObj]);
-        } catch (error) {
-            console.log(error);
-        }
-        return Promise.resolve();
-    };
-
     const handleSendMessage = (e: MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
@@ -50,12 +36,13 @@ const Form: React.FC<IForm> = ({ limit }) => {
             ?.then(() => {
                 PeerSMS.sendMessage(message, pn.number?.e164 as string)
                     .then((res) => {
-                        logger(`Sent message to ${parsedNumber}`).then(() => {
-                            console.log(res);
-                            // toast.success(res.data.message);
-                            setReceiverNumber("");
-                            setMessage("");
-                        });
+                        Log.postLog(
+                            `Message sent to ${parsedNumber}`,
+                            clientId
+                        );
+                        toast.success(res.data.message);
+                        setReceiverNumber("");
+                        setMessage("");
                     })
                     .catch((err) => {
                         toast.error(err);
@@ -84,13 +71,9 @@ const Form: React.FC<IForm> = ({ limit }) => {
             });
     };
 
-    const handleChangeCount = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        console.log("change");
-
-        if ((e as any).key === "Backspace") {
-            console.log("hey");
-            // e.preventDefault();
-            // textareaRef.current.disabled = false;
+    const handleKeyboardEvent = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+        if ((e as any).code === "Backspace" && remainingCharacter === 0) {
+            setMessage(message.slice(0, -1));
         }
     };
 
@@ -121,10 +104,8 @@ const Form: React.FC<IForm> = ({ limit }) => {
                             value={message}
                             disabled={remainingCharacter === 0}
                             ref={textareaRef}
-                            onChange={(e) => {
-                                setMessage(e.target.value);
-                                handleChangeCount(e);
-                            }}
+                            onChange={(e) => setMessage(e.target.value)}
+                            onKeyDown={handleKeyboardEvent}
                         />
                     </div>
                 </div>
@@ -135,6 +116,9 @@ const Form: React.FC<IForm> = ({ limit }) => {
                 <div className={styles.button__container}>
                     <button onClick={handleSendMessage}>Send</button>
                     <button onClick={handleCall}>Call</button>
+                    <button className={styles.disconnect__button}>
+                        <FiPhoneOff />
+                    </button>
                 </div>
             </form>
         </div>
