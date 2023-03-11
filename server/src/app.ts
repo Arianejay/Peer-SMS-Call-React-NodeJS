@@ -37,8 +37,11 @@ class App extends http.Server {
 
     async start() {
         this.setMiddleware();
-        return this.app.listen(PORT, () => {
-            logger.info(`Server is running on: http://localhost:${PORT}`);
+        this.app.set("port", PORT);
+        return this.app.listen(this.app.get("port"), () => {
+            logger.info(
+                `Server is running on: http://localhost:${this.app.get("port")}`
+            );
         });
     }
 }
