@@ -7,6 +7,11 @@ class PeerCall {
         await axiosInstance.post("/call/callback", { to });
     }
 
+    /**
+     * @description
+     * Outbound Call
+     * @param {{to: string}} to
+     */
     async getToken(to: string) {
         await this.callbackCall(to);
         const res = await axiosInstance.get("/call/token");
@@ -20,9 +25,9 @@ class PeerCall {
 
         if (device) {
             let call = (await device.connect({ params: { To: to } })) as any;
+            console.log(call);
 
             call.on("disconnect", () => {
-                console.log("disconnecteeeeed");
                 return Promise.reject("Call Disconnect");
             });
 

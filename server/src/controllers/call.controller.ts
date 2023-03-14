@@ -7,15 +7,15 @@ import VoiceResponse from "twilio/lib/twiml/VoiceResponse";
 export const GetToken = (req: Request, res: Response, next: NextFunction) => {
     try {
         const token = new AccessToken(
-            process.env.TWILIO_ACCOUNT_SID as string,
-            process.env.TWILIO_API_KEY as string,
-            process.env.TWILIO_SECRET as string,
+            process.env?.TWILIO_ACCOUNT_SID as string,
+            process.env?.TWILIO_API_KEY as string,
+            process.env?.TWILIO_SECRET as string,
             { identity: "PH" }
         );
         const VoiceGrant = AccessToken.VoiceGrant;
 
         const voiceGrant = new VoiceGrant({
-            outgoingApplicationSid: process.env.TWILIO_APP_SID,
+            outgoingApplicationSid: process.env?.TWILIO_APP_SID as string,
             incomingAllow: true,
         });
 
@@ -41,9 +41,8 @@ export const CallbackCall = (
 
         let twiml = new VoiceResponse();
         let dial = twiml.dial({
-            callerId: process.env.TWILIO_PHONE_NUMBER,
+            callerId: process.env?.TWILIO_PHONE_NUMBER as string,
         });
-
         dial.number(to);
 
         logger.info(`Dialing ${to}...`);
