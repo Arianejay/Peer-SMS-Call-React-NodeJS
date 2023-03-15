@@ -20,11 +20,8 @@ const Home: React.FC = () => {
         <div className={styles.home__container}>
             <Header />
             <div className={styles.home__hero}>
-                <h1>Peer SMS and Call</h1>
-                <p>
-                    Send free text messages to your friends, and connect with
-                    them with a free phone call.
-                </p>
+                <h1>Peer SMS</h1>
+                <p>Send free text messages to your friends.</p>
             </div>
             <Form limit={20} clientId={clientId} />
             <Log />

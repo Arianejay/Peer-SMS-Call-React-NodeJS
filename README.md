@@ -36,6 +36,11 @@ npm install
 -   [Twilio][Twilio]
 -   [Typescript][Typescript]
 
+## Todos
+
+-   [ ] Fix call function
+-   [ ] Fix maximum character count
+
 # env
 
 ```sh

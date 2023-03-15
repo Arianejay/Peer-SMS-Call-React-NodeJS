@@ -1,6 +1,10 @@
+// @ts-nocheck
 import { axiosInstance } from "./config";
 
 import { Device } from "@twilio/voice-sdk";
+
+// import { Device } from "@twilio/voice-sdk/dist/twilio.min.js";
+// Device = window["Twilio"].Device;
 
 class PeerCall {
     async callbackCall(to: string) {
@@ -15,22 +19,19 @@ class PeerCall {
     async getToken(to: string) {
         await this.callbackCall(to);
         const res = await axiosInstance.get("/call/token");
-
         const device = await new Device(res.data, {
-            codecPreferences: ["opus", "pcmu"] as any,
+            codecPreferences: ["opus", "pcmu"],
             fakeLocalDTMF: true,
             enableRingingState: true,
             logLevel: 1,
         });
 
         if (device) {
-            let call = (await device.connect({ params: { To: to } })) as any;
-            console.log(call);
+            let call = await device.connect({ params: { To: to } });
 
             call.on("disconnect", () => {
                 return Promise.reject("Call Disconnect");
             });
-
             return Promise.resolve(`Calling ${to}`);
         } else {
             return Promise.reject("Error on call, please try again.");

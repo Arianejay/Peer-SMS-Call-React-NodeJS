@@ -31,7 +31,7 @@ const Header: React.FC = () => {
     return (
         <div className={styles.header__container}>
             <p>{dateTimeString}</p>
-            <p className={styles.onCall}>On Call</p>
+            {/* <p className={styles.onCall}>On Call</p> */}
         </div>
     );
 };

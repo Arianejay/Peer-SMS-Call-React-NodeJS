@@ -1,4 +1,10 @@
-import React, { useState, MouseEvent, KeyboardEvent, useRef } from "react";
+import React, {
+    useState,
+    MouseEvent,
+    KeyboardEvent,
+    useRef,
+    useEffect,
+} from "react";
 import styles from "../stylesheets/main.module.scss";
 import { toast } from "react-toastify";
 import { parsePhoneNumber } from "awesome-phonenumber";
@@ -58,7 +64,7 @@ const Form: React.FC<IForm> = ({ limit, clientId }) => {
 
         validate(parsedNumber, message, phonePossibility, typeIsMobile, true)
             ?.then(() => {
-                PeerCall.getToken(pn.number?.e164 as string)
+                PeerCall.getToken(pn.number?.e164.substring(1) as string)
                     .then((res) => {
                         toast.success(res);
                     })
@@ -115,10 +121,10 @@ const Form: React.FC<IForm> = ({ limit, clientId }) => {
                 </p>
                 <div className={styles.button__container}>
                     <button onClick={handleSendMessage}>Send</button>
-                    <button onClick={handleCall}>Call</button>
+                    {/* <button onClick={handleCall}>Call</button>
                     <button className={styles.disconnect__button}>
                         <FiPhoneOff />
-                    </button>
+                    </button> */}
                 </div>
             </form>
         </div>
