@@ -4,7 +4,13 @@
 
 A simple sms and call application. User's basically can send free sms and make a free call. Powered by Twilio API.
 
-### Clone repository
+## Images
+
+<div align="center"> 
+ <img src="https://user-images.githubusercontent.com/103638111/225198937-1565c7ad-08d8-408d-906b-1e58cfd23f20.png" alt="screenshot" />
+</div>
+
+## Clone repository
 
 To clone the repository, use the following commands:
 
